@@ -9,6 +9,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 
 
@@ -20,9 +21,16 @@ const Topbar = () => {
   const handleLogout = () => {
     navigate("/login")
     localStorage.removeItem('loggedIn');
+
   };
+  const addProduct = () => {
+    navigate("/product")
+  }
+
+
   
   return (
+    <>
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
       <Box
@@ -46,6 +54,9 @@ const Topbar = () => {
           )}
         </IconButton>
         <IconButton>
+          <ControlPointIcon onClick={addProduct}/>
+        </IconButton>
+        <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton>
@@ -56,6 +67,8 @@ const Topbar = () => {
         </IconButton>
       </Box>
     </Box>
+    
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import Topbar from "../scenes/global/Topbar";
 import Sidebar from "../scenes/global/Sidebar";
 import Dashboard from "../scenes/dashboard";
@@ -10,23 +10,16 @@ import Bar from "../scenes/bar";
 import Line from "../scenes/line";
 import Pie from "../scenes/pie";
 import FAQ from "../scenes/faq";
-// import Geography from "./scenes/geography";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../theme";
 import Calendar from "../scenes/calendar/calendar";
-import { setActiveComponent } from "../redux/slices/tab/tabSlice";
 
 
 function DashboardAdmin() {
   const [theme, colorMode] = useMode();
   const activeComponent = useSelector(state => state.tab.activeComponent);
-  const dispatch = useDispatch();
-
-  const handleTab = (val) => {
-    dispatch(setActiveComponent(val));
-  }
-
+ 
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Dashboard':

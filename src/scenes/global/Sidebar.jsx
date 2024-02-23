@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, capitalize, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useSelector, useDispatch } from 'react-redux';
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";

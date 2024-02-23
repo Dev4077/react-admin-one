@@ -21,14 +21,3 @@ export const AuthRoute = () => {
     </>
   );
 };
-
-export const AdminAuthRoute = () => {
-  const isLogged = JSON.parse(localStorage.getItem(""));
-  if ((isLogged.email).endsWith("@superadmin.com")) {
-    return (
-      <>
-        {isLogged ? <Outlet /> : <Navigate to={"/"} />}
-      </>
-    );
-  }
-};
