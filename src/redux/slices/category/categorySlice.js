@@ -11,15 +11,18 @@ const categorySlice = createSlice({
     setOpen(state, action) {
       state.open = action.payload;
     },
-    setCategory(state, action) {
-      state.category = action.payload;
-    },
-    addCategory(state) {
-      if (state.category.trim() !== '') {
-        state.list.push(state.category);
-        state.category = '';
-        state.open = false;
+
+    addCategory(state, action) {
+      const categoryToAdd = action.payload;
+      if (categoryToAdd.trim() !== '') {
+        return {
+          ...state,
+          list: [...state.list, categoryToAdd],
+          category: '',
+          open: false
+        };
       }
+      return state;
     },
     selectCategory(state, action) { 
         state.selectedCategory = action.payload;
@@ -27,5 +30,5 @@ const categorySlice = createSlice({
   },
 });
 
-export const { setOpen, setCategory, addCategory, selectCategory } = categorySlice.actions;
+export const { setOpen, addCategory, selectCategory } = categorySlice.actions;
 export default categorySlice.reducer;

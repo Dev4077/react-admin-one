@@ -1,15 +1,16 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Header from '../../components/Header'
 import { Box } from '@mui/material'
 import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { setOpen, setCategory, addCategory } from '../../redux/slices/category/categorySlice'
+import { setOpen, addCategory } from '../../redux/slices/category/categorySlice'
 
 
 
 const Dashboard = () => {
-  const { open, category, list } = useSelector(state => state.categories);
+  const { open, list } = useSelector(state => state.categories);
   const dispatch = useDispatch();
+  const [category, setCategory] = useState('')
 
   const handleClickOpen = () => {
     dispatch(setOpen(true));
@@ -20,11 +21,11 @@ const Dashboard = () => {
   };
 
   const handleAddCategory = () => {
-    dispatch(addCategory());
+    dispatch(addCategory(category));
   };
 
   const handleChange = (e) => {
-    dispatch(setCategory(e.target.value));
+    setCategory(e.target.value);
   };
 
   return (
