@@ -10,11 +10,11 @@ import Bar from "../scenes/bar";
 import Line from "../scenes/line";
 import Pie from "../scenes/pie";
 import FAQ from "../scenes/faq";
+import ProductList from "../scenes/productList/ProductList";
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../theme";
 import Calendar from "../scenes/calendar/calendar";
-
 
 function DashboardAdmin() {
   const [theme, colorMode] = useMode();
@@ -42,6 +42,8 @@ function DashboardAdmin() {
         return <FAQ />;
       case 'Calendar':
         return <Calendar />;
+      case 'ProductList':
+        return <ProductList />;
       default:
         return <Dashboard />;
     }

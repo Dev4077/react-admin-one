@@ -8,6 +8,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import CategoryIcon from '@mui/icons-material/Category';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -153,6 +154,12 @@ const Sidebar = () => {
               icon={<ContactsOutlinedIcon />}
               selected={activeComponent === 'Contacts'}
               onClick={() => handleSetActiveComponent('Contacts')}
+              />
+            <Item
+              title="Product List"
+              icon={<CategoryIcon />}
+              selected={activeComponent === 'ProductList'}
+              onClick={() => handleSetActiveComponent('ProductList')}
               />
             <Item
               title="Invoices Balances"
