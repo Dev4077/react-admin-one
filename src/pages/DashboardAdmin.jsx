@@ -10,6 +10,7 @@ import Bar from "../scenes/bar";
 import Line from "../scenes/line";
 import Pie from "../scenes/pie";
 import FAQ from "../scenes/faq";
+import Users from "../scenes/users"
 import ProductList from "../scenes/productList/ProductList";
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -44,6 +45,8 @@ function DashboardAdmin() {
         return <Calendar />;
       case 'ProductList':
         return <ProductList />;
+      case 'Users':
+        return <Users />;
       default:
         return <Dashboard />;
     }

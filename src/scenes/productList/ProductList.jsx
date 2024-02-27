@@ -1,30 +1,38 @@
 import React from 'react'
-import  axios  from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Card, CardContent, CardMedia, Typography, useTheme } from '@mui/material';
 import { tokens } from "../../theme";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/slices/api/apiSlice';
 
   const ProductList = () => {
     const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+    const colors = tokens(theme.palette.mode);
+    const dispatch = useDispatch();
+    const products = useSelector((state) => state.products.data);
+    const status = useSelector((state) => state.products.status);
+    const error = useSelector((state) => state.products.error);
     
-      const [myData, setMyData] = useState([]);
-      useEffect(() =>{
-        try {
-          axios.get("https://fakestoreapi.com/products")
-          .then((res)=> {
-            setMyData(res.data);
-            console.log(res.data); 
-          });
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      },[]);
+    useEffect(() => {
+      if (status === 'idle') {
+        dispatch(fetchProducts());
+      }
+    }, [status, dispatch]);
+  
+    if (status === 'loading') {
+      return <div>Loading...</div>;
+    }
+  
+    if (status === 'failed') {
+      return <div>Error: {error}</div>;
+    }
+
     
+  
   return (
     <>
     <div style={{ display: 'flex', flexWrap: 'wrap', marginInline:'17px' }}>
-      {myData.map(item => (
+      {products.map(item => (
         <Card key={item.id} style={{ width: 300, margin: 10 , backgroundColor: colors.blueAccent[900]}} >
           <CardMedia
             component="img"
@@ -40,13 +48,13 @@ import { tokens } from "../../theme";
               Category: {item.category}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Price: ${item.price}
+              Price: ₹{(item.price * 70).toFixed(2)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Rating: {item.rating.rate} ({item.rating.count} reviews)
             </Typography>
             <Typography variant="body2" color="text.secondary">
-             Description: {item.description.slice(0, 74)}
+              Description: {item.description.slice(0, 114)}...
             </Typography>
           </CardContent>
         </Card>

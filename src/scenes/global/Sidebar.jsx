@@ -11,6 +11,7 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import CategoryIcon from '@mui/icons-material/Category';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
@@ -179,6 +180,11 @@ const Sidebar = () => {
               icon={<PersonOutlinedIcon />}
               selected={activeComponent === 'Form'}
               onClick={() => handleSetActiveComponent('Form')} />
+            <Item
+              title="Users"
+              icon={<PersonSearchIcon />}
+              selected={activeComponent === 'Users'}
+              onClick={() => handleSetActiveComponent('Users')} />
             <Item
               title="Calendar"
               icon={<CalendarTodayOutlinedIcon />}

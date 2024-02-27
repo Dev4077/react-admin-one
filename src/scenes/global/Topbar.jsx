@@ -24,7 +24,7 @@ const Topbar = () => {
 
   };
   const addProduct = () => {
-    navigate("/product")
+    navigate("/product-add")
   }
 
 

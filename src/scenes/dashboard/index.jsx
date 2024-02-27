@@ -33,8 +33,6 @@ const Dashboard = () => {
       <Box m='20px'>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}></Box>
         <Header title='Dashboard' subtitle="Welcome to the Dasboard" />
-
-
         <Button variant="success" onClick={handleClickOpen}>
           Add Category
         </Button>

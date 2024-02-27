@@ -3,12 +3,19 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import axios from "axios";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async (values, { resetForm }) => {
+    try {
+      const response = await axios.post("http://localhost:3003/api/userRegistration", values);
+      resetForm();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+
   };
 
   return (
@@ -149,6 +156,7 @@ const initialValues = {
   contact: "",
   address1: "",
   address2: "",
+  flag: true,
 };
 
 export default Form;
