@@ -3,7 +3,9 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import './Login.css';
 import { loginSchema } from "../Schema/AuthYup";
-
+import { Box, useTheme,Typography } from "@mui/material";
+import { tokens } from "../theme";
+import axios from "axios";
 
 
 const initialValues = {
@@ -13,47 +15,37 @@ const initialValues = {
   rememberMe: false,
 };
 
-
-
 const Login = () => {
   const navigate = useNavigate();
 
-  
+  // if (user) {
+  //   const logedUserData = loggedUser.find((x) => x.email === values.email);
+  //   const loggedIn = {
+  //     isLoggedIn: true,
+  //     adminName: logedUserData.adminName,
+  //     email: logedUserData.email,
+  //   };
+
+  // localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
+  //          navigate("/");
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const { values, errors, touched, handleChange, handleSubmit } = useFormik({
     initialValues: initialValues,
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      const loggedUser = JSON.parse(localStorage.getItem("AdminData"));
-      // console.log(loggedUser);
-
-      // check email and password for login
-      const user = loggedUser.find(
-        (user) =>
-          user.email === values.email && user.password === values.password
-      );
-      //user.
-
-      if (user) {
-        const logedUserData = loggedUser.find((x) => x.email === values.email);
-        const loggedIn = {
-          isLoggedIn: true,
-          adminName: logedUserData.adminName,
-          email: logedUserData.email,
-        };
-        // console.log(loggedIn);
-            if((values.email).endsWith("@superadmin.com"))
-          {
-            localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
-           navigate("/");}
-           else{
-            alert("Not an admin")
-           }
-      } else {
-        // alert('Wrong Email or Password !')
-        values.alertForWrong = "Wrong Email or Password!";
+    onSubmit: async (values, { resetForm }) =>  {
+      try {
+        
+        const response = await axios.post("http://localhost:3003/api/authlogin", values);
+        resetForm();
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        navigate('/')
+      } catch (error) {
+        console.error("Error submitting form:", error);
       }
-
+      
     },
   });
 
@@ -63,7 +55,7 @@ const Login = () => {
         <div class="wrapper">
           <h2>Login</h2>
           {values.alertForWrong && (
-            <p className="alertForWrong">{values.alertForWrong}</p>
+            <p className="red">{values.alertForWrong}</p>
           )}
           <form onSubmit={handleSubmit}>
             <div class="input-box">
@@ -75,7 +67,7 @@ const Login = () => {
                 onChange={handleChange}
               />
             </div>
-            {errors.email && touched.email ? <p>{errors.email}</p> : null}
+            {errors.email && touched.email ? <p className="red">{errors.email}</p> : null}
             <div class="input-box">
               <input
                 type="password"
@@ -86,7 +78,7 @@ const Login = () => {
               />
             </div>
             {errors.password && touched.password ? (
-              <p>{errors.password}</p>
+              <p className="red">{errors.password}</p>
             ) : null}
             <div class="input-box button">
               <input type="Submit"></input>

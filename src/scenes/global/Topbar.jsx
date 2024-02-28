@@ -1,5 +1,5 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
+import { Box, IconButton, useTheme, MenuItem, Menu } from "@mui/material";
+import { useContext,useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -20,14 +20,22 @@ const Topbar = () => {
   const navigate  = useNavigate()
   const handleLogout = () => {
     navigate("/login")
-    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('token');
 
   };
   const addProduct = () => {
     navigate("/product-add")
   }
 
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   
   return (
     <>
@@ -62,9 +70,19 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton onClick={handleLogout}>
-          <PersonOutlinedIcon />
-        </IconButton>
+        <IconButton onClick={handleClick}>
+        <PersonOutlinedIcon />
+      </IconButton>
+      <Menu
+        id="dropdown-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem>Profile</MenuItem>
+      </Menu>
       </Box>
     </Box>
     

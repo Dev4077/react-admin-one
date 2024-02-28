@@ -3,6 +3,8 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import './Register.css';
 import { registerSchema } from "../Schema/AuthYup";
+import axios from "axios";
+
 
 const initialValues = {
   adminName: "",
@@ -16,32 +18,42 @@ const initialValues = {
 const Register = () => {
   const navigate = useNavigate();
 
+  
+
   const { values, errors, touched, handleChange, handleSubmit } = useFormik({
     initialValues: initialValues,
     validationSchema: registerSchema,
-    onSubmit: (values) => {
-      let existingData = JSON.parse(localStorage.getItem("AdminData")) || [];
-
-      const emailExists = existingData.some(
-        (user) => user.email === values.email
-      );
-      if (emailExists) {
-        values.alertForEmail =
-          "Email already exists. Please choose a different email.";
-        return;
+    onSubmit: async (values, { resetForm }) =>  {
+      try {
+        const response = await axios.post("http://localhost:3003/api/authRegistration", values);
+        resetForm();
+      } catch (error) {
+        console.error("Error submitting form:", error);
       }
-      const Payload = {
-        adminName: values.adminName,
-        email: values.email,
-        password: values.password,
-      };
-      console.log(existingData);
-      existingData.push(Payload);
-      
-      localStorage.setItem("AdminData", JSON.stringify(existingData));
       navigate("/login");
     },
+      // let existingData = JSON.parse(localStorage.getItem("AdminData")) || [];
+
+      // const emailExists = existingData.some(
+      //   (user) => user.email === values.email
+      // );
+      // if (emailExists) {
+      //   values.alertForEmail =
+      //     "Email already exists. Please choose a different email.";
+      //   return;
+      // }
+      // const Payload = {
+      //   adminName: values.adminName,
+      //   email: values.email,
+      //   password: values.password,
+      // };
+      // console.log(existingData);
+      // existingData.push(Payload);
+      
+      // localStorage.setItem("AdminData", JSON.stringify(existingData));
+  
   });
+
 
   //
   return (
@@ -75,7 +87,7 @@ const Register = () => {
                 onChange={handleChange}
               />
             </div>
-            {errors.email && touched.email ? <p>{errors.email}</p> : null}
+            {errors.email && touched.email ? <p className="red">{errors.email}</p> : null}
             <div class="input-box">
               <input
                 type="password"

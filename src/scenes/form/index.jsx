@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -96,6 +96,7 @@ const Form = () => {
                 helperText={touched.contact && errors.contact}
                 sx={{ gridColumn: "span 4" }}
               />
+              
               <TextField
                 fullWidth
                 variant="filled"
@@ -122,6 +123,25 @@ const Form = () => {
                 helperText={touched.address2 && errors.address2}
                 sx={{ gridColumn: "span 4" }}
               />
+              <FormControl fullWidth>
+              <InputLabel id="Role">Role</InputLabel>
+              <Select
+                placeholder="Role"
+                variant="filled"
+                value={values.role}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="role"
+                label="Role"
+                error={!!touched.role && !!errors.role}
+                helperText={touched.role && errors.role}
+                sx={{ gridColumn: "span 4" }}
+              >
+                <MenuItem value="Staff">Staff</MenuItem>
+                <MenuItem value="Manager">Manager</MenuItem>
+                <MenuItem value="User">User</MenuItem>
+              </Select>
+              </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -146,6 +166,7 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
+  role: yup.string().required("required"),
   address1: yup.string().required("required"),
   address2: yup.string().required("required"),
 });
@@ -154,6 +175,7 @@ const initialValues = {
   lastName: "",
   email: "",
   contact: "",
+  role: "",
   address1: "",
   address2: "",
   flag: true,

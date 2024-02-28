@@ -42,7 +42,7 @@ const Item = ({ title, icon, selected, onClick }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch();
   const activeComponent = useSelector(state => state.tab.activeComponent);
 
@@ -50,8 +50,8 @@ const Sidebar = () => {
     dispatch(setActiveComponent(component));
   }
 
-  const AdminData = JSON.parse(localStorage.getItem("loggedIn"))
-  const AdminName = AdminData.adminName.toUpperCase();
+  // const AdminData = JSON.parse(localStorage.getItem("loggedIn"))
+  // const AdminName = AdminData.adminName.toUpperCase();
 
   return (
     <Box
@@ -119,7 +119,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {AdminName}
+                
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Admin

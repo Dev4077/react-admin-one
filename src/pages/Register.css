@@ -8,14 +8,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #4070f4;
+  background: #141B2D;
 }
 
 .wrapper{
   position: relative;
   max-width: 430px;
   width: 90%;
-  background: #fff;
+  background: #1F2A40;
   /* padding: 74px; */
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
@@ -25,7 +25,7 @@
   position: relative;
   font-size: 22px;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
 }
 .wrapper h2::before{
   content: '';
@@ -82,7 +82,7 @@ form h3{
   background: #0e4bf1;
 }
 form .text h3{
- color: #333;
+ color: #ffffff;
  width: 100%;
  text-align: center;
 }

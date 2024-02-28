@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 
 export const NonAuthRoute = () => {
-  const isLogged = JSON.parse(localStorage.getItem("loggedIn"));
+  const isLogged = localStorage.getItem("token");
 
   return (
     <>
@@ -14,7 +14,8 @@ export const NonAuthRoute = () => {
 };
 
 export const AuthRoute = () => {
-  const isLogged = JSON.parse(localStorage.getItem("loggedIn"));
+  const isLogged = localStorage.getItem("token");
+  // const isLogged = true;
   return (
     <>
       {isLogged ? <Outlet /> : <Navigate to={"/login"} />}
