@@ -23,9 +23,9 @@ const Topbar = () => {
     localStorage.removeItem('token');
 
   };
-  const addProduct = () => {
-    navigate("/product-add")
-  }
+  // const addProduct = () => {
+  //   navigate("/product-add")
+  // }
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -61,9 +61,9 @@ const Topbar = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
           <ControlPointIcon onClick={addProduct}/>
-        </IconButton>
+        </IconButton> */}
         <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>

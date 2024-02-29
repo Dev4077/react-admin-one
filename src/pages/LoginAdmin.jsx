@@ -39,9 +39,14 @@ const Login = () => {
       try {
         
         const response = await axios.post("http://localhost:3003/api/authlogin", values);
-        resetForm();
-        localStorage.setItem("token", JSON.stringify(response.data.token));
-        navigate('/')
+        // console.log(response);
+        if(response.data.status){
+          resetForm();
+          localStorage.setItem("token", JSON.stringify(response.data.token));
+          navigate('/')
+        }else{
+
+        }
       } catch (error) {
         console.error("Error submitting form:", error);
       }

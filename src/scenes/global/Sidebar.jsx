@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,6 +16,7 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { setActiveComponent } from "../../redux/slices/tab/tabSlice";
 // import Dashboard from "../dashboard";
@@ -40,9 +41,21 @@ const Item = ({ title, icon, selected, onClick }) => {
 };
 
 const Sidebar = () => {
+  
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsCollapsed(window.innerWidth <= 768); 
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); 
+
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch();
   const activeComponent = useSelector(state => state.tab.activeComponent);
 
@@ -108,7 +121,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={`../../assets/user.png`} // Image of Admin
+                  src={`../../assets/user.png`} 
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -155,6 +168,12 @@ const Sidebar = () => {
               icon={<ContactsOutlinedIcon />}
               selected={activeComponent === 'Contacts'}
               onClick={() => handleSetActiveComponent('Contacts')}
+              />
+            <Item
+              title="Add Product"
+              icon={<ControlPointIcon />}
+              selected={activeComponent === 'ProductAdd'}
+              onClick={() => handleSetActiveComponent('ProductAdd')}
               />
             <Item
               title="Product List"

@@ -37,24 +37,27 @@ import { fetchProducts } from '../../redux/slices/api/apiSlice';
           <CardMedia
             component="img"
             height="200"
-            image={item.image}
-            alt={item.title}
+            image={item.productImageURL}
+            alt={item.productTitle}
           />
           <CardContent>
             <Typography variant="h6" component="div" >
-              {item.title}
+              {item.productTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Category: {item.category}
+              Category: {item.selectCategory}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Price: ₹{(item.price * 70).toFixed(2)}
+              Sub-Category: {item.selectSubCategory}
             </Typography>
             <Typography variant="body2" color="text.secondary">
+              Price: ₹{(item.productPrice * 70).toFixed(2)}
+            </Typography>
+            {/* <Typography variant="body2" color="text.secondary">
               Rating: {item.rating.rate} ({item.rating.count} reviews)
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" color="text.secondary">
-              Description: {item.description.slice(0, 114)}...
+              Description: {item.productDes.slice(0, 114)}...
             </Typography>
           </CardContent>
         </Card>

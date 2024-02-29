@@ -10,6 +10,7 @@ import Bar from "../scenes/bar";
 import Line from "../scenes/line";
 import Pie from "../scenes/pie";
 import FAQ from "../scenes/faq";
+import ProductAdd from '../scenes/product/AddProduct'
 import Users from "../scenes/users"
 import ProductList from "../scenes/productList/ProductList";
 import { useSelector } from 'react-redux';
@@ -55,6 +56,8 @@ function DashboardAdmin() {
         return <ProductList />;
       case 'Users':
         return <Users />;
+      case 'ProductAdd':
+        return <ProductAdd />;
       default:
         return <Dashboard />;
     }
