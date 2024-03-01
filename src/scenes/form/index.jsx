@@ -10,7 +10,7 @@ const Form = () => {
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const response = await axios.post("http://localhost:3003/api/userRegistration", values);
+      const response = await axios.post("http://192.168.1.12:3003/api/userRegistration", values);
       resetForm();
     } catch (error) {
       console.error("Error submitting form:", error);

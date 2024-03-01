@@ -30,7 +30,7 @@ import { fetchProducts } from '../../redux/slices/api/apiSlice';
     
   
   return (
-    <>
+    
     <div style={{ display: 'flex', flexWrap: 'wrap', marginInline:'17px' }}>
       {products.map(item => (
         <Card key={item.id} style={{ width: 300, margin: 10 , backgroundColor: colors.blueAccent[900]}} >
@@ -45,10 +45,10 @@ import { fetchProducts } from '../../redux/slices/api/apiSlice';
               {item.productTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Category: {item.selectCategory}
+              Category: {item.categoryID.category}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Sub-Category: {item.selectSubCategory}
+              Sub-Category:  {item.subCategoryID.subcategory}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Price: ₹{(item.productPrice * 70).toFixed(2)}
@@ -63,8 +63,6 @@ import { fetchProducts } from '../../redux/slices/api/apiSlice';
         </Card>
       ))}
     </div>
-      
-    </>
   )
 }
 
