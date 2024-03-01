@@ -1,39 +1,29 @@
 import React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardMedia, Typography, useTheme } from '@mui/material';
 import { tokens } from "../../theme";
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from '../../redux/slices/api/apiSlice';
+import axios from 'axios';
 
-  const ProductList = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const dispatch = useDispatch();
-    const products = useSelector((state) => state.products.data);
-    const status = useSelector((state) => state.products.status);
-    const error = useSelector((state) => state.products.error);
-    
-    useEffect(() => {
-      if (status === 'idle') {
-        dispatch(fetchProducts());
-      }
-    }, [status, dispatch]);
-  
-    if (status === 'loading') {
-      return <div>Loading...</div>;
-    }
-  
-    if (status === 'failed') {
-      return <div>Error: {error}</div>;
-    }
+const ProductList = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [productData, setProductData] = useState([])
 
-    
-  
+  const fetchProducts =  async () => {
+    const response = await axios.get('http://192.168.1.12:3003/api/getproduct');
+    setProductData(response.data);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  },[])
+  console.log(productData)
+
   return (
-    
-    <div style={{ display: 'flex', flexWrap: 'wrap', marginInline:'17px' }}>
-      {products.map(item => (
-        <Card key={item.id} style={{ width: 300, margin: 10 , backgroundColor: colors.blueAccent[900]}} >
+
+    <div style={{ display: 'flex', flexWrap: 'wrap', marginInline: '17px' }}>
+      {productData.map(item => (
+        <Card key={item.id} style={{ width: 300, margin: 10, backgroundColor: colors.blueAccent[900] }} >
           <CardMedia
             component="img"
             height="200"
@@ -45,10 +35,10 @@ import { fetchProducts } from '../../redux/slices/api/apiSlice';
               {item.productTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Category: {item.categoryID.category}
+              Category: {item.categoryID && item.categoryID.category}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Sub-Category:  {item.subCategoryID.subcategory}
+              Sub-Category: {item.subCategoryID && item.subCategoryID.subcategory}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Price: ₹{(item.productPrice * 70).toFixed(2)}

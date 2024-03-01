@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, Input } from "@mui/material";
+import { Box, Button, TextField, Select, MenuItem, InputLabel, FormControl  } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import axios from "axios";
-import { fetchProducts } from '../../redux/slices/api/apiSlice';
+// import { fetchProducts } from '../../redux/slices/api/apiSlice';
 // import { fetchCatData } from "../../service/getapi";
 
 const ProductAdd = () => {
@@ -17,7 +17,6 @@ const ProductAdd = () => {
     try {
       const response = await axios.get('http://192.168.1.12:3003/api/getcategory');
       setCategoryData(response.data);
-      // console.log(categoryData)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -28,7 +27,7 @@ const ProductAdd = () => {
     try {
       const response = await axios.get('http://192.168.1.12:3003/api/getsubcategory');
       setSubCategoryData(response.data);
-      // console.log(subcategoryData)
+      // console.log(response.data)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -41,8 +40,6 @@ const ProductAdd = () => {
 
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
-  
 
   const handleCategorySubmit = async (values, { resetForm }) => {
     try {
@@ -65,14 +62,16 @@ const ProductAdd = () => {
 
   const handleCategoryChange = (event) => {
     const selectedCategory = event.target.value;
-    const filteredSubCategories = subcategoryData.filter(subCategory => subCategory.perentCategory === selectedCategory);
-    setFilteredSubCategories(filteredSubCategories);
+    // console.log(selectedCategory)
+    let filteredSubCat = subcategoryData.filter(subCategory => subCategory.perentCategory._id === selectedCategory);
+    // console.log(filteredSubCategories)
+    setFilteredSubCategories(filteredSubCat);
   };
 
   const handleProductSubmit = async (values) => {
     try {
       const response = await axios.post("http://192.168.1.12:3003/api/addproduct", values);
-      fetchProducts();
+    
     } catch (error) {
       console.error("Error submitting form:", error);
     }
