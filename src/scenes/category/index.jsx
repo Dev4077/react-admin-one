@@ -15,9 +15,13 @@ const CategoryList = () => {
     const [subcategoryData, setSubCategoryData] = useState([]);
     const [selectedSubCategory, setSelectedSubCategory] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openSubDelete, setOpenSubDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const [openSubEdit, setOpenSubEdit] = useState(false);
     const [selectedCatId, setSelectedCatId] = useState(null);
+    const [selectedSubCatId, setSelectedSubCatId] = useState(null);
     const [editedCat, setEditedCat] = useState(null);
+    const [editedSubCat, setEditedSubCat] = useState(null);
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -28,9 +32,9 @@ const CategoryList = () => {
             // console.log(response.data)
             const filteredData = response.data.filter(item => item.flag === true);
             const formattedData = filteredData.map((user, index) => ({
-              ...user,
-              id: index + 1, 
-            }));  
+                ...user,
+                id: index + 1,
+            }));
             //   console.log(formattedData)
             setCategoryData(formattedData);
         } catch (error) {
@@ -43,9 +47,9 @@ const CategoryList = () => {
             const response = await axios.get('http://192.168.1.8:3003/api/getsubcategory');
             const filteredData = response.data.filter(item => item.flag === true);
             const formattedData = filteredData.map((subcat, index) => ({
-              ...subcat,
-              id: index + 1, 
-            }));  
+                ...subcat,
+                id: index + 1,
+            }));
             //   console.log(formattedData)
             setSubCategoryData(formattedData);
         } catch (error) {
@@ -60,58 +64,90 @@ const CategoryList = () => {
 
     const handleDeleteCat = async (id) => {
         try {
-          await axios.delete(`http://192.168.1.8:3003/api/categorydelete/${id}`, { flag: false });
-          setCategoryData(categoryData.filter(category => category._id !== id));
-          setOpenDelete(false);
+            await axios.delete(`http://192.168.1.8:3003/api/categorydelete/${id}`, { flag: false });
+            setCategoryData(categoryData.filter(category => category._id !== id));
+            setOpenDelete(false);
+            toast.success("Category Deleted");
         } catch (error) {
-          console.error('Error deleting category:', error);
-        }
-      };
-
-    const handleDeleteIconClick = (id) => {
-        setSelectedCatId(id);
-        setOpenDelete(true);
-      };
-
-      const handleEditIconClick = (category) => {
-        setEditedCat(category);
-        setOpenEdit(true);
-      };
-
-      const handleCloseDialog = () => {
-        setOpenDelete(false);
-        setOpenEdit(false);
-        setSelectedCatId(null);
-        setEditedCat(null);
-      };
-      const handleUpdateCat = async () => {
-        try {
-          await axios.put(`http://192.168.1.8:3003/api/categoryedit/${editedCat._id}`, editedCat);
-          setCategoryData(categoryData.map(category => (category._id === editedCat._id ? editedCat : category)));
-          setOpenEdit(false);
-        } catch (error) {
-          console.error('Error updating category:', error);
-        }
-      };
-      const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEditedCat(prevState => ({
-          ...prevState,
-          [name]: value
-        }));
-      };
-
-    const handleDeleteSubCategory = async (id) => {
-        try {
-            const response = await axios.delete(`http://192.168.1.8:3003/api/subcategorydelete/${id}`);
-            setSubCategoryData(); 
-            toast.success(response.data.message);
-        } catch (error) {
-            console.error('Error deleting subcategory:', error);
-            toast.error('Error deleting subcategory');
+            console.error('Error deleting category:', error);
+            toast.error("Error");
         }
     };
- 
+
+    const handleCatDeleteIconClick = (id) => {
+        setSelectedCatId(id);
+        setOpenDelete(true);
+    };
+    const handleSubCatDeleteIconClick = (id) => {
+        setSelectedSubCatId(id);
+        setOpenSubDelete(true);
+    };
+
+    const handleCatEditIconClick = (category) => {
+        setEditedCat(category);
+        setOpenEdit(true);
+    };
+    const handleSubCatEditIconClick = (category) => {
+        setEditedSubCat(category);
+        setOpenSubEdit(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDelete(false);
+        setOpenSubDelete(false);
+        setOpenEdit(false);
+        setOpenSubEdit(false);
+        setSelectedCatId(null);
+        setEditedCat(null);
+        setSelectedSubCatId(null);
+        setEditedSubCat(null);
+    };
+    const handleUpdateCat = async () => {
+        try {
+            await axios.put(`http://192.168.1.8:3003/api/categoryedit/${editedCat._id}`, editedCat);
+            setCategoryData(categoryData.map(category => (category._id === editedCat._id ? editedCat : category)));
+            setOpenEdit(false);
+            toast.success("Category Update");
+        } catch (error) {
+            console.error('Error updating category:', error);
+            toast.error("Error")
+        }
+    };
+    const handleUpdateSubCat = async () => {
+        try {
+            await axios.put(`http://192.168.1.8:3003/api/subcategoryedit/${editedSubCat._id}`, editedSubCat);
+            setSubCategoryData(subcategoryData.map(subcategory => (subcategory._id === editedSubCat._id ? editedSubCat : subcategory)));
+            setOpenSubEdit(false);
+            toast.success("Sub-Category Update");
+        } catch (error) {
+            console.error('Error updating sub-category:', error);
+            toast.error("Error")
+        }
+    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditedCat(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+        setEditedSubCat(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleDeleteSubCat = async (id) => {
+        try {
+            await axios.delete(`http://192.168.1.8:3003/api/subcategorydelete/${id}`, { flag: false });
+            setSubCategoryData(subcategoryData.filter(subcategory => subcategory._id !== id));
+            setOpenSubDelete(false);
+            toast.success("Sub-Category Deleted");
+        } catch (error) {
+            console.error('Error deleting sub-category:', error);
+            toast.error("error")
+        }
+    };
+
     const handleSwitchChange = async (id, newValue) => {
         try {
             await axios.post(`http://192.168.1.8:3003/api/activecategory/${id}`, {
@@ -127,6 +163,7 @@ const CategoryList = () => {
                     }
                 });
             });
+            
         } catch (error) {
             console.error('Error updating category data:', error);
         }
@@ -134,12 +171,12 @@ const CategoryList = () => {
 
     const handleSubSwitchChange = async (id, newSubValue) => {
         try {
-            
+
             await axios.post(`http://192.168.1.8:3003/api/activesubcategory/${id}`, {
                 isSubCatActive: newSubValue,
             });
-    
-            
+
+
             setSelectedSubCategory(prevData => {
                 return prevData.map(subcategory => {
                     if (subcategory._id === id) {
@@ -151,12 +188,12 @@ const CategoryList = () => {
             });
         } catch (error) {
             console.error("Error updating subcategory:", error);
-           
+
         }
     };
-   
+
     const handleSubCategoryClick = (id) => {
-        
+
         const selectedCategory = id;
         const filteredSubCat = subcategoryData.filter(subCategory => subCategory.perentCategory._id === selectedCategory);
         setSelectedSubCategory(filteredSubCat);
@@ -203,16 +240,16 @@ const CategoryList = () => {
             headerName: 'Actions',
             flex: 1,
             renderCell: (params) => (
-              <div>
-                <IconButton onClick={() => handleDeleteIconClick(params.row._id)}>
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton onClick={() => handleEditIconClick(params.row)}>
-                  <ModeEditIcon />
-                </IconButton>
-              </div>
+                <div>
+                    <IconButton onClick={() => handleCatDeleteIconClick(params.row._id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleCatEditIconClick(params.row)}>
+                        <ModeEditIcon />
+                    </IconButton>
+                </div>
             ),
-          },
+        },
     ];
 
     const columnsSubCat = [
@@ -226,8 +263,8 @@ const CategoryList = () => {
                 const handleSubChange = (event) => {
                     handleSubSwitchChange(params.row._id, event.target.checked);
                     console.log(selectedSubCategory)
-                   
-                    
+
+
                 };
                 return (
                     <Switch
@@ -241,14 +278,19 @@ const CategoryList = () => {
             }
         },
         {
-            field: 'deleteSubCatButton',
-            headerName: 'Delete',
+            field: 'actions',
+            headerName: 'Actions',
             flex: 1,
-            renderCell: (params) => {
-                return (
-                    <button onClick={() => handleDeleteSubCategory(params.row._id)}>Delete</button>
-                );
-            }
+            renderCell: (params) => (
+                <div>
+                    <IconButton onClick={() => handleSubCatDeleteIconClick(params.row._id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleSubCatEditIconClick(params.row)}>
+                        <ModeEditIcon />
+                    </IconButton>
+                </div>
+            ),
         },
     ];
 
@@ -256,7 +298,7 @@ const CategoryList = () => {
 
     return (
         <>
-            <Box m="20px">
+            <Box m="20px"> <ToastContainer />
                 <Header title="Category" subtitle="Managing the Category and Sub-Category" />
                 <Box m='40px 0 0 0' height='40vh' sx={{
                     "& .MuiDataGrid-root": {
@@ -287,35 +329,35 @@ const CategoryList = () => {
                         pageSize={5}
                         rowsPerPageOptions={[5, 10, 20]}
                     />
-                            <Dialog open={openDelete} onClose={handleCloseDialog}>
-          <DialogTitle>Delete Category</DialogTitle>
-          <DialogContent>
-            <Typography variant="body1">Are you sure you want to delete this category?</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={() => handleDeleteCat(selectedCatId)} color="error">Delete</Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog open={openEdit} onClose={handleCloseDialog}>
-          <DialogTitle>Edit Category</DialogTitle>
-          <DialogContent>
-            <TextField
-              margin="dense"
-              label="Category"
-              name="category"
-              fullWidth
-              value={editedCat?.category}
-              onChange={handleInputChange}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleUpdateCat} color="primary">Update</Button>
-          </DialogActions>
-        </Dialog>
+                    <Dialog open={openDelete} onClose={handleCloseDialog}>
+                        <DialogTitle>Delete Category</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body1">Are you sure you want to delete this category?</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                            <Button onClick={() => handleDeleteCat(selectedCatId)} color="error">Delete</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={openEdit} onClose={handleCloseDialog}>
+                        <DialogTitle>Edit Category</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                margin="dense"
+                                label="Category"
+                                name="category"
+                                fullWidth
+                                value={editedCat?.category}
+                                onChange={handleInputChange}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                            <Button onClick={handleUpdateCat} color="primary">Update</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Box>
-                {( selectedSubCategory &&
+                {(selectedSubCategory &&
                     <Box mt={2} className="sub-category-table">
                         <Box m='40px 0 0 0' height='40vh' sx={{
                             "& .MuiDataGrid-root": {
@@ -348,10 +390,37 @@ const CategoryList = () => {
                                     pageSize={3}
                                     rowsPerPageOptions={[3, 6, 20]}
                                 />
+                                <Dialog open={openSubDelete} onClose={handleCloseDialog}>
+                                    <DialogTitle>Delete Sub-Category</DialogTitle>
+                                    <DialogContent>
+                                        <Typography variant="body1">Are you sure you want to delete this sub-category?</Typography>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                                        <Button onClick={() => handleDeleteSubCat(selectedSubCatId)} color="error">Delete</Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Dialog open={openSubEdit} onClose={handleCloseDialog}>
+                                    <DialogTitle>Edit Sub-Category</DialogTitle>
+                                    <DialogContent>
+                                        <TextField
+                                            margin="dense"
+                                            label="Sub-Category"
+                                            name="subcategory"
+                                            fullWidth
+                                            value={editedSubCat?.subcategory}
+                                            onChange={handleInputChange}
+                                        />
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                                        <Button onClick={handleUpdateSubCat} color="primary">Update</Button>
+                                    </DialogActions>
+                                </Dialog>
                             </div>
                         </Box>
                     </Box>
-               )}
+                )}
             </Box>
         </>
     );
