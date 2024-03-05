@@ -19,3 +19,15 @@ export const fetchSubCategoryData = async () => {
     return [];
   }
 };
+
+export const fetchProducts =  async () => {
+  try {
+    const response = await axios.get('http://192.168.1.12:3003/api/getproduct');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Product data:', error);
+    return [];
+  }
+ 
+
+};

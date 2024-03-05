@@ -13,6 +13,7 @@ import FAQ from "../scenes/faq";
 import ProductAdd from '../scenes/product/AddProduct'
 import Users from "../scenes/users"
 import ProductList from "../scenes/productList/ProductList";
+import CategoryList from "../scenes/category/index";
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../theme";
@@ -58,6 +59,8 @@ function DashboardAdmin() {
         return <Users />;
       case 'ProductAdd':
         return <ProductAdd />;
+      case 'CategoryList':
+        return <CategoryList />;
       default:
         return <Dashboard />;
     }

@@ -18,6 +18,7 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import BallotIcon from '@mui/icons-material/Ballot';
 import { setActiveComponent } from "../../redux/slices/tab/tabSlice";
 // import Dashboard from "../dashboard";
 
@@ -174,6 +175,12 @@ const Sidebar = () => {
               icon={<ControlPointIcon />}
               selected={activeComponent === 'ProductAdd'}
               onClick={() => handleSetActiveComponent('ProductAdd')}
+              />
+            <Item
+              title="Category List"
+              icon={<BallotIcon />}
+              selected={activeComponent === 'CategoryList'}
+              onClick={() => handleSetActiveComponent('CategoryList')}
               />
             <Item
               title="Product List"

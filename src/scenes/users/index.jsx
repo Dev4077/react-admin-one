@@ -19,12 +19,12 @@ const UserRegistrationComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.1.12:3003/api/userDetails');
+        const response = await axios.get('http://192.168.1.8:3003/api/userDetails');
         const filteredData = response.data.filter(item => item.flag === true);
         const formattedData = filteredData.map((user, index) => ({
           ...user,
           id: index + 1, 
-        }));
+        }));  
         setUserData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -37,7 +37,7 @@ const UserRegistrationComponent = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await axios.delete(`http://192.168.1.12:3003/api/userDetails/${userId}`, { flag: false });
+      await axios.delete(`http://192.168.1.8:3003/api/userDetails/${userId}`, { flag: false });
       setUserData(userData.filter(user => user._id !== userId));
       setOpenDelete(false);
     } catch (error) {
@@ -64,7 +64,7 @@ const UserRegistrationComponent = () => {
 
   const handleUpdateUser = async () => {
     try {
-      await axios.put(`http://192.168.1.12:3003/userDetails/${editedUser._id}`, editedUser);
+      await axios.put(`http://192.168.1.8:3003/userDetails/${editedUser._id}`, editedUser);
       setUserData(userData.map(user => (user._id === editedUser._id ? editedUser : user)));
       setOpenEdit(false);
     } catch (error) {

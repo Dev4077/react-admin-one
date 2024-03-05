@@ -5,8 +5,9 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import axios from "axios";
-// import { fetchProducts } from '../../redux/slices/api/apiSlice';
-// import { fetchCatData } from "../../service/getapi";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ProductAdd = () => {
   const [categoryData, setCategoryData] = useState([]);
@@ -15,7 +16,7 @@ const ProductAdd = () => {
 
   const fetchCatData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.12:3003/api/getcategory');
+      const response = await axios.get('http://192.168.1.8:3003/api/getcategory');
       setCategoryData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -25,7 +26,7 @@ const ProductAdd = () => {
 
   const fetchSubCatData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.12:3003/api/getsubcategory');
+      const response = await axios.get('http://192.168.1.8:3003/api/getsubcategory');
       setSubCategoryData(response.data);
       // console.log(response.data)
     } catch (error) {
@@ -38,21 +39,31 @@ const ProductAdd = () => {
     fetchSubCatData();
   }, [])
 
-
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleCategorySubmit = async (values, { resetForm }) => {
     try {
-      const response = await axios.post("http://192.168.1.12:3003/api/addcategory", values);
+      const response = await axios.post("http://192.168.1.8:3003/api/addcategory", values);
+      if (response.data.status) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
       resetForm();
       fetchCatData();
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("An error occurred while submitting the form");
     }
   };
   const handlesubCategorySubmit = async (values, { resetForm }) => {
     try {
-      const response = await axios.post("http://192.168.1.12:3003/api/addsubcategory", values);
+      const response = await axios.post("http://192.168.1.8:3003/api/addsubcategory", values);
+      if (response.data.status) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
       resetForm();
       fetchSubCatData();
     } catch (error) {
@@ -62,6 +73,7 @@ const ProductAdd = () => {
 
   const handleCategoryChange = (event) => {
     const selectedCategory = event.target.value;
+    // console.log(subcategoryData)
     // console.log(selectedCategory)
     let filteredSubCat = subcategoryData.filter(subCategory => subCategory.perentCategory._id === selectedCategory);
     // console.log(filteredSubCategories)
@@ -70,8 +82,13 @@ const ProductAdd = () => {
 
   const handleProductSubmit = async (values) => {
     try {
-      const response = await axios.post("http://192.168.1.12:3003/api/addproduct", values);
-    
+      const response = await axios.post("http://192.168.1.8:3003/api/addproduct", values);
+      if (response.data.status) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+      // resetForm();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -81,6 +98,7 @@ const ProductAdd = () => {
     <>
       <div style={{ display: "grid" }}>
         <Box m="20px">
+        <ToastContainer />
           <Header title="ADD Category" subtitle="Create a New Category" />
           <Formik
             onSubmit={handleCategorySubmit}
@@ -96,7 +114,7 @@ const ProductAdd = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
-                  display="grid"
+                  display="flex"
                   gap="30px"
                   gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                   sx={{
@@ -121,6 +139,7 @@ const ProductAdd = () => {
                   <Button type="submit" color="secondary" variant="contained">
                     Create New Category
                   </Button>
+                  
                 </Box>
               </form>
             )}
@@ -210,7 +229,6 @@ const ProductAdd = () => {
             {({
               values,
               errors,
-              touched,
               handleBlur,
               handleChange,
               handleSubmit,
@@ -224,52 +242,7 @@ const ProductAdd = () => {
                     "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
                   }}
                 >
-                  <FormControl fullWidth>
-                    <InputLabel id="Category">Select Category</InputLabel>
-                    <Select
-                      placeholder="Category"
-                      variant="filled"
-                      value={values.categoryID}
-                      onChange={(event) => {
-                        handleChange(event);
-                        handleCategoryChange(event);
-                      }}
-                      onBlur={handleBlur}
-                      name="categoryID"
-                      label="Category"
-                      error={!!errors.categoryID}
-                      helperText={errors.categoryID}
-                      sx={{ gridColumn: "span 4" }}
-                    >
-                      {categoryData.map((category) => (
-                        <MenuItem key={category._id} value={category._id}>
-                          {category.category}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <FormControl fullWidth>
-                    <InputLabel id="Role">Select Sub-Category</InputLabel>
-                    <Select
-                      placeholder="Sub-Category"
-                      variant="filled"
-                      value={values.subCategoryID}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      name="subCategoryID"
-                      label="Sub-Category"
-                      error={!!errors.subCategoryID}
-                      helperText={errors.subCategoryID}
-                      sx={{ gridColumn: "span 2" }}
-
-                    >
-                      {filteredSubCategories.map((subCategory) => (
-                        <MenuItem key={subCategory._id} value={subCategory._id}>
-                          {subCategory.subcategory}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+              
                   <TextField
                     fullWidth
                     variant="filled"
@@ -309,6 +282,52 @@ const ProductAdd = () => {
                     helperText={errors.productDes}
                     sx={{ gridColumn: "span 4" }}
                   />
+                      <FormControl fullWidth>
+                    <InputLabel id="Category">Select Category</InputLabel>
+                    <Select
+                      placeholder="Category"
+                      variant="filled"
+                      value={values.categoryID}
+                      onChange={(event) => {
+                        handleChange(event);
+                        handleCategoryChange(event);
+                      }}
+                      onBlur={handleBlur}
+                      name="categoryID"
+                      label="Category"
+                      error={!!errors.categoryID}
+                      helperText={errors.categoryID}
+                      sx={{ gridColumn: "span 4" }}
+                    >
+                      {categoryData.map((category) => (
+                        <MenuItem key={category._id} value={category._id}>
+                          {category.category}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <InputLabel id="Role">Select Sub-Category</InputLabel>
+                    <Select
+                      placeholder="Sub-Category"
+                      variant="filled"
+                      value={values.subCategoryID}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      name="subCategoryID"
+                      label="Sub-Category"
+                      error={!!errors.subCategoryID}
+                      helperText={errors.subCategoryID}
+                      sx={{ gridColumn: "span 2" }}
+
+                    >
+                      {filteredSubCategories.map((subCategory) => (
+                        <MenuItem key={subCategory && subCategory._id} value={ subCategory && subCategory._id}>
+                          {subCategory.subcategory}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   <TextField
                     fullWidth
                     variant="filled"
@@ -339,10 +358,16 @@ const ProductAdd = () => {
 
 const initialValuesCat = {
   category: "",
+  isCatActive: true,
+  flag:true
+
 };
 const initialValuesSubCat = {
   perentCategory: "",
   subcategory: "",
+  isSubCatActive: true,
+  flag:true
+
 };
 const initialValuesProduct = {
   productTitle: "",
@@ -351,14 +376,17 @@ const initialValuesProduct = {
   categoryID: "",
   subCategoryID: "",
   productImageURL: "",
+  flag:true
 };
 
 const catSchema = yup.object().shape({
   category: yup.string().required("required"),
+  flag: yup.boolean().required("required"),
 });
 const subcatSchema = yup.object().shape({
   perentCategory: yup.string().required("required"),
   subcategory: yup.string().required("required"),
+  flag: yup.boolean().required("required"),
 });
 const productSchema = yup.object().shape({
   productTitle: yup.string().required("required"),
@@ -369,6 +397,7 @@ const productSchema = yup.object().shape({
     categoryID: yup.string().required("required"),
     subCategoryID: yup.string().required("required"),
   productImageURL: yup.string().required("required"),
+  flag: yup.boolean().required("required"),
 });
 
 export default ProductAdd

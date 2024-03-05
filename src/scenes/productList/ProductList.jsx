@@ -9,15 +9,19 @@ const ProductList = () => {
   const colors = tokens(theme.palette.mode);
   const [productData, setProductData] = useState([])
 
-  const fetchProducts =  async () => {
-    const response = await axios.get('http://192.168.1.12:3003/api/getproduct');
-    setProductData(response.data);
+  const fetchProducts = async () => {
+    const response = await axios.get('http://192.168.1.8:3003/api/getproduct');
+    const filteredData = response.data.filter(item => 
+      item.categoryID.isCatActive && item.subCategoryID.isSubCatActive
+    );
+    setProductData(filteredData);
+    console.log(filteredData)
   };
 
   useEffect(() => {
     fetchProducts();
   },[])
-  console.log(productData)
+  // console.log(productData)
 
   return (
 
