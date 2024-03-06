@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import { DataGrid } from "@mui/x-data-grid";
-import { Grid, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography, MenuItem, Select, useTheme, Box } from '@mui/material';
+import { Grid, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, DialogActions, Button, TextField, Typography, MenuItem, Select, useTheme, Box } from '@mui/material';
 import { Switch } from '@mui/material';
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -9,6 +8,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { Formik } from "formik";
+import * as yup from "yup";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { fetch_CatData, fetch_SubCatData, handle_DeleteCat, handle_DeleteSubCat, handle_UpdateSubCat, handle_UpdateCat, handle_CategorySubmit, handle_subCategorySubmit, handle_SubSwitchChange, handle_SwitchChange } from "../../service/apiFun";
 
 const CategoryList = () => {
     const [categoryData, setCategoryData] = useState([]);
@@ -18,6 +21,8 @@ const CategoryList = () => {
     const [openSubDelete, setOpenSubDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openSubEdit, setOpenSubEdit] = useState(false);
+    const [openSubBox, setOpenSubBox] = useState(false);
+    const [openCatBox, setOpenCatBox] = useState(false);
     const [selectedCatId, setSelectedCatId] = useState(null);
     const [selectedSubCatId, setSelectedSubCatId] = useState(null);
     const [editedCat, setEditedCat] = useState(null);
@@ -26,52 +31,38 @@ const CategoryList = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const fetchCatData = async () => {
-        try {
-            const response = await axios.get('http://192.168.1.8:3003/api/getcategory');
-            // console.log(response.data)
-            const filteredData = response.data.filter(item => item.flag === true);
-            const formattedData = filteredData.map((user, index) => ({
-                ...user,
-                id: index + 1,
-            }));
-            //   console.log(formattedData)
-            setCategoryData(formattedData);
-        } catch (error) {
-            console.error('Error fetching category data:', error);
-        }
-    };
-
-    const fetchSubCatData = async () => {
-        try {
-            const response = await axios.get('http://192.168.1.8:3003/api/getsubcategory');
-            const filteredData = response.data.filter(item => item.flag === true);
-            const formattedData = filteredData.map((subcat, index) => ({
-                ...subcat,
-                id: index + 1,
-            }));
-            //   console.log(formattedData)
-            setSubCategoryData(formattedData);
-        } catch (error) {
-            console.error('Error fetching category data:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchCatData();
-        fetchSubCatData();
+        fetch_CatData(setCategoryData);
+        fetch_SubCatData(setSubCategoryData);
     }, []);
 
+    //button for add cat and sub-cat
+
+    const isNonMobile = useMediaQuery("(min-width:600px)");
+
+    const handleCategorySubmit = async (values, { resetForm }) => {
+        handle_CategorySubmit(values, resetForm, fetch_CatData);
+    };
+
+    const handlesubCategorySubmit = async (values, { resetForm }) => {
+        handle_subCategorySubmit(values, resetForm, fetch_SubCatData);
+    };
+
+    const handleOpenSub = () => {
+        setOpenSubBox(true);
+    };
+    const handleOpenCat = () => {
+        setOpenCatBox(true);
+    };
+    const handleCloseSub = () => {
+        setOpenSubBox(false);
+    };
+    const handleCloseCat = () => {
+        setOpenCatBox(false);
+    };
+
     const handleDeleteCat = async (id) => {
-        try {
-            await axios.delete(`http://192.168.1.8:3003/api/categorydelete/${id}`, { flag: false });
-            setCategoryData(categoryData.filter(category => category._id !== id));
-            setOpenDelete(false);
-            toast.success("Category Deleted");
-        } catch (error) {
-            console.error('Error deleting category:', error);
-            toast.error("Error");
-        }
+        handle_DeleteCat(id, setCategoryData, setOpenDelete)
     };
 
     const handleCatDeleteIconClick = (id) => {
@@ -96,6 +87,8 @@ const CategoryList = () => {
         setOpenDelete(false);
         setOpenSubDelete(false);
         setOpenEdit(false);
+        setOpenSubBox(false);
+        setOpenCatBox(false);
         setOpenSubEdit(false);
         setSelectedCatId(null);
         setEditedCat(null);
@@ -103,26 +96,10 @@ const CategoryList = () => {
         setEditedSubCat(null);
     };
     const handleUpdateCat = async () => {
-        try {
-            await axios.put(`http://192.168.1.8:3003/api/categoryedit/${editedCat._id}`, editedCat);
-            setCategoryData(categoryData.map(category => (category._id === editedCat._id ? editedCat : category)));
-            setOpenEdit(false);
-            toast.success("Category Update");
-        } catch (error) {
-            console.error('Error updating category:', error);
-            toast.error("Error")
-        }
+        handle_UpdateCat(editedCat, setCategoryData, setOpenEdit, categoryData);
     };
     const handleUpdateSubCat = async () => {
-        try {
-            await axios.put(`http://192.168.1.8:3003/api/subcategoryedit/${editedSubCat._id}`, editedSubCat);
-            setSubCategoryData(subcategoryData.map(subcategory => (subcategory._id === editedSubCat._id ? editedSubCat : subcategory)));
-            setOpenSubEdit(false);
-            toast.success("Sub-Category Update");
-        } catch (error) {
-            console.error('Error updating sub-category:', error);
-            toast.error("Error")
-        }
+        handle_UpdateSubCat(editedSubCat, setSubCategoryData, setOpenSubEdit, subcategoryData);
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -137,59 +114,15 @@ const CategoryList = () => {
     };
 
     const handleDeleteSubCat = async (id) => {
-        try {
-            await axios.delete(`http://192.168.1.8:3003/api/subcategorydelete/${id}`, { flag: false });
-            setSubCategoryData(subcategoryData.filter(subcategory => subcategory._id !== id));
-            setOpenSubDelete(false);
-            toast.success("Sub-Category Deleted");
-        } catch (error) {
-            console.error('Error deleting sub-category:', error);
-            toast.error("error")
-        }
+        handle_DeleteSubCat(id, setSubCategoryData, setOpenSubDelete);
     };
 
     const handleSwitchChange = async (id, newValue) => {
-        try {
-            await axios.post(`http://192.168.1.8:3003/api/activecategory/${id}`, {
-                isCatActive: newValue
-            });
-
-            setCategoryData(prevData => {
-                return prevData.map(category => {
-                    if (category._id === id) {
-                        return { ...category, isCatActive: newValue };
-                    } else {
-                        return category;
-                    }
-                });
-            });
-            
-        } catch (error) {
-            console.error('Error updating category data:', error);
-        }
+        handle_SwitchChange(id, newValue, setCategoryData);
     };
 
     const handleSubSwitchChange = async (id, newSubValue) => {
-        try {
-
-            await axios.post(`http://192.168.1.8:3003/api/activesubcategory/${id}`, {
-                isSubCatActive: newSubValue,
-            });
-
-
-            setSelectedSubCategory(prevData => {
-                return prevData.map(subcategory => {
-                    if (subcategory._id === id) {
-                        return { ...subcategory, isSubCatActive: newSubValue };
-                    } else {
-                        return subcategory;
-                    }
-                });
-            });
-        } catch (error) {
-            console.error("Error updating subcategory:", error);
-
-        }
+        handle_SubSwitchChange(id, newSubValue, setSelectedSubCategory);
     };
 
     const handleSubCategoryClick = (id) => {
@@ -197,7 +130,7 @@ const CategoryList = () => {
         const selectedCategory = id;
         const filteredSubCat = subcategoryData.filter(subCategory => subCategory.perentCategory._id === selectedCategory);
         setSelectedSubCategory(filteredSubCat);
-        fetchSubCatData();
+        fetch_SubCatData();
         // console.log(selectedSubCategory);
     };
 
@@ -253,7 +186,7 @@ const CategoryList = () => {
     ];
 
     const columnsSubCat = [
-        { field: '_id', headerName: 'ID', flex: 1 },
+        { field: '_id', headerName: 'ID', Header },
         { field: 'subcategory', headerName: 'Sub-category', flex: 1 },
         {
             field: 'isSubCatActive',
@@ -298,9 +231,129 @@ const CategoryList = () => {
 
     return (
         <>
+
+            <Dialog open={openCatBox} onClose={handleCloseDialog}>
+                <DialogTitle>ADD Category</DialogTitle>
+                <DialogContent>
+                    <Formik
+                        initialValues={initialValuesCat}
+                        validationSchema={catSchema}
+                        onSubmit={handleCategorySubmit}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleChange,
+                            handleBlur,
+                            handleSubmit,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box>
+                                    <TextField
+                                        fullWidth
+                                        variant="filled"
+                                        type="text"
+                                        label="Category"
+                                        name="category"
+                                        value={values.category}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={!!errors.category && touched.category}
+                                        helperText={touched.category && errors.category}
+                                    />
+                                </Box>
+                                <DialogActions>
+                                    <Button onClick={handleCloseCat} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" color="primary" variant="contained" onClick={handleCloseCat}>
+                                        Create New Category
+                                    </Button>
+                                </DialogActions>
+                            </form>
+                        )}
+                    </Formik>
+                </DialogContent>
+            </Dialog>
+            {/* for add sub category  */}
+
+            <Dialog open={openSubBox} onClose={handleCloseDialog}>
+                <DialogTitle>ADD Sub-Category</DialogTitle>
+                <DialogContent>
+                    <Formik
+                        initialValues={initialValuesSubCat}
+                        validationSchema={subcatSchema}
+                        onSubmit={handlesubCategorySubmit}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleChange,
+                            handleBlur,
+                            handleSubmit,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="Category">Select Category</InputLabel>
+                                        <Select
+                                            labelId="Category"
+                                            id="perentCategory"
+                                            value={values.perentCategory}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            name="perentCategory"
+                                            error={!!errors.perentCategory && touched.perentCategory}
+                                        >
+                                            {categoryData.map((category) => (
+                                                <MenuItem key={category._id} value={category._id}>
+                                                    {category.category}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                                <Box mt={2}>
+                                    <TextField
+                                        fullWidth
+                                        variant="filled"
+                                        type="text"
+                                        label="Sub-Category"
+                                        name="subcategory"
+                                        value={values.subcategory}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={!!errors.subcategory && touched.subcategory}
+                                        helperText={touched.subcategory && errors.subcategory}
+                                    />
+                                </Box>
+                                <DialogActions>
+                                    <Button onClick={handleCloseSub} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" color="primary" variant="contained" onClick={handleCloseSub}>
+                                        Create New Sub-Category
+                                    </Button>
+                                </DialogActions>
+                            </form>
+                        )}
+                    </Formik>
+                </DialogContent>
+            </Dialog>
+
             <Box m="20px"> <ToastContainer />
-                <Header title="Category" subtitle="Managing the Category and Sub-Category" />
-                <Box m='40px 0 0 0' height='40vh' sx={{
+                <Box style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Header title="Category" subtitle="Managing the Category" />
+                    <div>
+                        <Button onClick={handleOpenCat} style={{ color: colors.grey[900], background: colors.greenAccent[400], borderRadius: "4px", padding: "7px" }}>
+                            Add Categoory
+                        </Button> <Button onClick={handleOpenSub} style={{ color: colors.grey[900], background: colors.greenAccent[400], borderRadius: "4px", padding: "7px" }}>
+                            Add Sub-Category
+                        </Button></div>
+                </Box>
+                <Box height='40vh' sx={{
                     "& .MuiDataGrid-root": {
                         border: 'none'
                     },
@@ -328,6 +381,7 @@ const CategoryList = () => {
                         columns={columnsCat}
                         pageSize={5}
                         rowsPerPageOptions={[5, 10, 20]}
+                        autoHeight
                     />
                     <Dialog open={openDelete} onClose={handleCloseDialog}>
                         <DialogTitle>Delete Category</DialogTitle>
@@ -349,6 +403,7 @@ const CategoryList = () => {
                                 fullWidth
                                 value={editedCat?.category}
                                 onChange={handleInputChange}
+
                             />
                         </DialogContent>
                         <DialogActions>
@@ -389,6 +444,7 @@ const CategoryList = () => {
                                     columns={columnsSubCat}
                                     pageSize={3}
                                     rowsPerPageOptions={[3, 6, 20]}
+                                    autoHeight
                                 />
                                 <Dialog open={openSubDelete} onClose={handleCloseDialog}>
                                     <DialogTitle>Delete Sub-Category</DialogTitle>
@@ -427,3 +483,29 @@ const CategoryList = () => {
 };
 
 export default CategoryList;
+
+const initialValuesCat = {
+    category: "",
+    isCatActive: true,
+    flag: true
+
+};
+
+const initialValuesSubCat = {
+    perentCategory: "",
+    subcategory: "",
+    isSubCatActive: true,
+    flag: true
+
+};
+
+const subcatSchema = yup.object().shape({
+    perentCategory: yup.string().required("required"),
+    subcategory: yup.string().required("required"),
+    flag: yup.boolean().required("required"),
+});
+
+const catSchema = yup.object().shape({
+    category: yup.string().required("required"),
+    flag: yup.boolean().required("required"),
+});

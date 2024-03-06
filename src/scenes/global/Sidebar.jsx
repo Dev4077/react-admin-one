@@ -158,24 +158,11 @@ const Sidebar = () => {
             >
               Data
             </Typography>
-            <Item
-              title="Manage Team"
-              icon={<PeopleOutlinedIcon />}
-              selected={activeComponent === 'Team'}
-              onClick={() => handleSetActiveComponent('Team')}
-            />
-            <Item
-              title="Contacts Information"
-              icon={<ContactsOutlinedIcon />}
-              selected={activeComponent === 'Contacts'}
-              onClick={() => handleSetActiveComponent('Contacts')}
-              />
-            <Item
-              title="Add Product"
-              icon={<ControlPointIcon />}
-              selected={activeComponent === 'ProductAdd'}
-              onClick={() => handleSetActiveComponent('ProductAdd')}
-              />
+              <Item
+              title="Users"
+              icon={<PersonSearchIcon />}
+              selected={activeComponent === 'Users'}
+              onClick={() => handleSetActiveComponent('Users')} />
             <Item
               title="Category List"
               icon={<BallotIcon />}
@@ -206,11 +193,6 @@ const Sidebar = () => {
               icon={<PersonOutlinedIcon />}
               selected={activeComponent === 'Form'}
               onClick={() => handleSetActiveComponent('Form')} />
-            <Item
-              title="Users"
-              icon={<PersonSearchIcon />}
-              selected={activeComponent === 'Users'}
-              onClick={() => handleSetActiveComponent('Users')} />
             <Item
               title="Calendar"
               icon={<CalendarTodayOutlinedIcon />}
