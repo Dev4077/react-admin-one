@@ -291,7 +291,7 @@ const ProductList = () => {
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSize={5}
+            // pageSize={5}
             checkboxSelection
             disableSelectionOnClick
             rowsPerPageOptions={[5, 10, 20]}

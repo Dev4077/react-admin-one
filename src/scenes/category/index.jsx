@@ -382,7 +382,7 @@ const CategoryList = () => {
                         rows={categoryData}
                         getRowId={getRowId}
                         columns={columnsCat}
-                        pageSize={5}
+                        // pageSize={5}
                         rowsPerPageOptions={[5, 10, 20]}
                         autoHeight
                     />
@@ -445,8 +445,8 @@ const CategoryList = () => {
                                     rows={selectedSubCategory}
                                     getRowId={getRowId}
                                     columns={columnsSubCat}
-                                    pageSize={3}
-                                    rowsPerPageOptions={[3, 6, 20]}
+                                    // pageSize={2}
+                                    rowsPerPageOptions={[2, 6, 20]}
                                     autoHeight
                                 />
                                 <Dialog open={openSubDelete} onClose={handleCloseDialog}>
