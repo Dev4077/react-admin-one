@@ -123,6 +123,9 @@ const CategoryList = () => {
 
     const handleSubSwitchChange = async (id, newSubValue) => {
         handle_SubSwitchChange(id, newSubValue, setSelectedSubCategory);
+        setTimeout(() => {
+            fetch_SubCatData(setSubCategoryData);
+          }, 14); 
     };
 
     const handleSubCategoryClick = (id) => {
@@ -130,7 +133,7 @@ const CategoryList = () => {
         const selectedCategory = id;
         const filteredSubCat = subcategoryData.filter(subCategory => subCategory.perentCategory._id === selectedCategory);
         setSelectedSubCategory(filteredSubCat);
-        fetch_SubCatData();
+
         // console.log(selectedSubCategory);
     };
 
@@ -195,7 +198,7 @@ const CategoryList = () => {
             renderCell: (params) => {
                 const handleSubChange = (event) => {
                     handleSubSwitchChange(params.row._id, event.target.checked);
-                    console.log(selectedSubCategory)
+                    // console.log(selectedSubCategory)
 
 
                 };
